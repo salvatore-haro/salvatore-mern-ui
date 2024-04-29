@@ -64,7 +64,10 @@ const BotonModal = ({ onSuccessfulSubmit }) => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  return getUserInfo() && (
+  const userInfo = getUserInfo();
+  const canCreatePost = userInfo && userInfo.userRole !== 'reader';
+
+  return canCreatePost && (
     <div>
       <Button variant="contained" onClick={handleOpen} color="inherit" size="large">
         Agregar Publicación
