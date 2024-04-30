@@ -32,4 +32,15 @@ const createPost = async (payload) => {
   });
 };
 
-export { fetchPosts, createPost };
+const deletePost = async (id) => {
+  const token = getUserToken();
+  return fetch(`${ENDPOINT}/${id}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+export { fetchPosts, createPost, deletePost };

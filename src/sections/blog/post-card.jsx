@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import Box from '@mui/material/Box';
@@ -9,38 +10,27 @@ import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 
 import { fDate } from 'src/utils/format-time';
-
 import Iconify from 'src/components/iconify';
+import { getUserInfo } from 'src/services/auth-service';
+import PostCardActions from './post-card-actions';
 
-const getCoverPost = (post) => {
-  let cover = `/assets/images/post/hide.png`;
-  if (post.content_value) {
-    switch (post.content_type) {
-      case 'image':
-        cover = post.content_value;
-        break;
-      case 'video':
-        cover = `/assets/images/post/video.png`;
-        break;
-      case 'website':
-        cover = `/assets/images/post/web.png`;
-        break;
-      case 'document':
-        cover = `/assets/images/post/doc.png`;
-        break;
-      default:
-        cover = `/assets/images/post/unknown.png`;
-        break;
-    }
-  }
-  return cover;
-};
-
-export default function PostCard({ post, index }) {
+export default function PostCard({ post, onRefresh, index }) {
+  const [popAnchorEl, setPopAnchorEl] = useState(null);
   const { title, author } = post;
-  const cover = getCoverPost(post);
+  const userInfo = getUserInfo();
+  const cover = getCoverPost(post, userInfo);
   const createdAt = new Date();
   const latestPostLarge = false;
+
+  const handlerCardClick = (event) => {
+    if (post.content_value) {
+      setPopAnchorEl(event.currentTarget);
+    }
+  };
+
+  const handlePopClose = () => {
+    setPopAnchorEl(null);
+  };
 
   const renderTitle = (
     <Link
@@ -132,13 +122,7 @@ export default function PostCard({ post, index }) {
 
   return (
     <Grid xs={12} sm={latestPostLarge ? 12 : 6} md={latestPostLarge ? 6 : 3}>
-      <CardActionArea
-        onClick={() => {
-          if (post.content_value) {
-            window.open(post.content_value, '_blank');
-          }
-        }}
-      >
+      <CardActionArea onClick={handlerCardClick}>
         <Card>
           <Box
             sx={{
@@ -167,11 +151,44 @@ export default function PostCard({ post, index }) {
           </Box>
         </Card>
       </CardActionArea>
+
+      <PostCardActions
+        anchorEl={popAnchorEl}
+        onClose={handlePopClose}
+        onRefresh={onRefresh}
+        userInfo={userInfo}
+        post={post}
+      />
     </Grid>
   );
 }
 
 PostCard.propTypes = {
   post: PropTypes.object.isRequired,
+  onRefresh: PropTypes.func,
   index: PropTypes.number,
+};
+
+const getCoverPost = (post, userInfo) => {
+  let cover = `/assets/images/post/hide.png`;
+  if (post.content_value && userInfo) {
+    switch (post.content_type) {
+      case 'image':
+        cover = post.content_value;
+        break;
+      case 'video':
+        cover = `/assets/images/post/video.png`;
+        break;
+      case 'website':
+        cover = `/assets/images/post/web.png`;
+        break;
+      case 'document':
+        cover = `/assets/images/post/doc.png`;
+        break;
+      default:
+        cover = `/assets/images/post/unknown.png`;
+        break;
+    }
+  }
+  return cover;
 };

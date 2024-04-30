@@ -74,7 +74,14 @@ export default function BlogView() {
 
       <Grid container spacing={3}>
         {posts.map((post, index) => (
-          <PostCard key={post.id} post={post} index={index} />
+          <PostCard
+            key={post.id}
+            post={post}
+            onRefresh={() => {
+              setRefreshData(Math.random());
+            }}
+            index={index}
+          />
         ))}
       </Grid>
     </Container>

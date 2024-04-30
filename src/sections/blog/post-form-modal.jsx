@@ -101,7 +101,7 @@ const BotonModal = ({ onSuccessfulSubmit }) => {
           <Typography variant="body2" sx={{ mt: 2, mb: 3 }}>
             Comparte a la comunidad cualquier nota de interés.
           </Typography>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} noValidate>
             <TextField
               id="standard-basic"
               label="Titulo"
