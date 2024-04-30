@@ -49,7 +49,7 @@ export default function PostCardActions({ anchorEl, onClose, onRefresh, userInfo
   ));
 
   return (
-    actionItems.length && (
+    actionItems.length ? (
       <Popover
         id={id}
         open={isOpen}
@@ -77,7 +77,7 @@ export default function PostCardActions({ anchorEl, onClose, onRefresh, userInfo
           {actionItems}
         </List>
       </Popover>
-    )
+    ) : null
   );
 }
 
